@@ -10,7 +10,7 @@ import java.util.List;
 public interface DeathNote {
 
     /**
-     * Returns the list of rules for this DeathNote.
+     * Returns the list of rules for this DeathNote. Sono 13 le regole
      */
     List<String> RULES = List.of(
         """
@@ -88,7 +88,7 @@ public interface DeathNote {
      */
     void writeName(String name);
 
-    /**
+    /**  
      * If the cause of death is written within the next 40 milliseconds of writing the person's
      * name, it will happen.
      *

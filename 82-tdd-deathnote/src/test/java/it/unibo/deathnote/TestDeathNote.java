@@ -1,5 +1,7 @@
 package it.unibo.deathnote;
 
-class TestDeathNote {
+import it.unibo.deathnote.impl.DeathNoteImplementation;
 
+class TestDeathNote {
+    
 }

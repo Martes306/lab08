@@ -14,7 +14,7 @@
 1. Create a new `JPanel`
 2. Use an horizontal `BoxLayout` as layout
 3. Set the new `JPanel` as the only content of the center of the previously existing `BorderLayout`
-4. Add the `JButton` to the new panel
+4. Add the `JButton` to the new panel 
 5. Test your application: it should appear similar, but the button will get smaller
 6. In `display()`, use `JFrame.pack()` to resize the frame to the minimum size prior to displaying
 
