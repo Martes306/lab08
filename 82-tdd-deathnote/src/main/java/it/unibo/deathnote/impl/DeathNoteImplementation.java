@@ -8,15 +8,28 @@ import it.unibo.deathnote.api.DeathNote;
 public class DeathNoteImplementation implements DeathNote {
 
     private static final int INDEX = 1;
-    private static final long TIME_CAUSE_DEATH = 40L;
-    private static final long TIME_DETAIL_DEATH = 6400L;
+    private static final long TIME_NS = 1_000_000L;
+    private static final long TIME_CAUSE_DEATH = 40L * TIME_NS;
+    private static final long TIME_DETAIL_DEATH = 64L * TIME_NS;
     private long time;
     private String lastName;
     private final Map<String, Death> deathNote;
 
     enum choice {
-        DEATH,
-        DETAIL
+        DETAIL {
+            @Override
+            void apply(Death death, String input) {
+                death.setDetail(input);
+            }
+        },
+        DEATH {
+            @Override
+            void apply(Death death, String input) {
+                death.setDeath(input);
+            }
+        };
+
+        abstract void apply(Death death, String input);
     }
 
     public DeathNoteImplementation() {
@@ -27,7 +40,6 @@ public class DeathNoteImplementation implements DeathNote {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((lastName == null) ? 0 : lastName.hashCode());
         result = prime * result + ((deathNote == null) ? 0 : deathNote.hashCode());
         return result;
     }
@@ -41,11 +53,6 @@ public class DeathNoteImplementation implements DeathNote {
         if (getClass() != obj.getClass())
             return false;
         DeathNoteImplementation other = (DeathNoteImplementation) obj;
-        if (lastName == null) {
-            if (other.lastName != null)
-                return false;
-        } else if (!lastName.equals(other.lastName))
-            return false;
         if (deathNote == null) {
             if (other.deathNote != null)
                 return false;
@@ -56,8 +63,8 @@ public class DeathNoteImplementation implements DeathNote {
 
     @Override
     public String getRule(int ruleNumber) {
-        if (ruleNumber < 1 || ruleNumber > 13) {
-            throw new IllegalArgumentException();
+        if (ruleNumber < 1 || ruleNumber > RULES.size()) {
+            throw new IllegalArgumentException("Rule index " + ruleNumber + " does not exist");
         }
         return RULES.get(ruleNumber - INDEX);
     }
@@ -96,43 +103,59 @@ public class DeathNoteImplementation implements DeathNote {
 
     private void setDeathDetails(String input, choice choice) {
         Death tmpDeath = deathNote.get(lastName);
-        if (choice == DeathNoteImplementation.choice.DETAIL) {
-            tmpDeath.setDetail(input);
-        } else {
-            tmpDeath.setDeath(input);
-        }
+        choice.apply(tmpDeath, input);
     }
 
     private void inputAndDeathTest(String input) {
-        if (Objects.requireNonNull(input) == null || deathNote.keySet() == null) {
-            throw new IllegalStateException();
+        if (Objects.requireNonNull(input) == null || deathNote.isEmpty()) {
+            throw new IllegalStateException("The death note is empty or the input is null");
         }
     }
 
     private void createDeathIfNotExist() {
-        if (deathNote.get(lastName) == null) {
+        if (deathNoteIsNull()) {
             deathNote.put(lastName, new Death());
         }
     }
 
+    private boolean deathNoteIsNull() {
+        return deathNote.get(lastName) == null;
+    }
+
     private boolean timeTest(long timeTest) {
-        return Long.compare(this.time - System.nanoTime(), timeTest) <= 0;
+        return Long.compare(System.nanoTime() - this.time, timeTest) <= 0;
     }
 
     @Override
     public String getDeathCause(String name) {
-        return deathNote.get(name).getDeath();
+        nameInMap(name);
+        if (deathNoteIsNull() || deathNote.get(name).getDeath() == null) {
+            return "heart attack";
+        } else {
+            return deathNote.get(name).getDeath();
+        }
     }
 
     @Override
     public String getDeathDetails(String name) {
-        return deathNote.get(name).getDetail();
+        nameInMap(name);
+        if (deathNoteIsNull() || deathNote.get(name).getDetail() == null) {
+            return "";
+        } else {
+            return deathNote.get(name).getDetail();
+        }
+
+    }
+
+    private void nameInMap(String name) {
+        if (!isNameWritten(name)) {
+            throw new IllegalArgumentException();
+        }
     }
 
     @Override
     public boolean isNameWritten(String name) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isNameWritten'");
+        return deathNote.containsKey(name);
     }
 
     private static final class Death {
