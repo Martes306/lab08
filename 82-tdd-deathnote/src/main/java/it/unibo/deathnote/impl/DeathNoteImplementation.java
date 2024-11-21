@@ -144,7 +144,6 @@ public class DeathNoteImplementation implements DeathNote {
         } else {
             return deathNote.get(name).getDetail();
         }
-
     }
 
     private void nameInMap(String name) {
