@@ -2,7 +2,6 @@ package it.unibo.mvc.model;
 
 import it.unibo.mvc.api.DrawNumber;
 import it.unibo.mvc.api.DrawResult;
-
 import java.util.Random;
 
 /**

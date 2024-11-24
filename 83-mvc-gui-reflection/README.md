@@ -1,4 +1,4 @@
-# Work with MVC
+# Work with MVC 
 
 This application is a simple "draw number" game with an MVC architecture (ECB-like).
 `DrawNumber` is the application model (Entity in ECB).
@@ -17,11 +17,11 @@ whether graphical or on command line (or network, or whatever).
   and that it notifies all of them (for instance with a `for` cicle) every time a new event should be displayed.
 * Attach at the same time two graphical views and a console view, and verify that the application works as expected.
 
-## Reflection loading
+## Reflection loading 
 
 Instead of hard-coding the implementation of the views, in `LaunchApp` do as follows:
 * Via reflection, load the classes that implement `DrawNumberView` by their name
   * Note: you need the *qualified* name
 * Find the 0-ary constructor
 * Using a `for` cycle, attach three graphical and three command line views built with the previously found constructor
-* Launch the application
+* Launch the application  
